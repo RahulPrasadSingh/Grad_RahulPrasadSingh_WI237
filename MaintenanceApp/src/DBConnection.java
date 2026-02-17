@@ -1,3 +1,4 @@
+package MaintenanceApp.src;
 import java.sql.*;
 public interface DBConnection {
     Connection connect();

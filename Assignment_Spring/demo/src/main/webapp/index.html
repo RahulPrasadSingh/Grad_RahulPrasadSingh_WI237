@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Registration</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0d0f14;
+      --surface:  #13161e;
+      --border:   #252a36;
+      --accent:   #5cffb1;
+      --accent2:  #ff6b6b;
+      --text:     #e8eaf0;
+      --muted:    #5a607a;
+      --input-bg: #1a1e2a;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      color: var(--text);
+    }
+
+    /* Animated grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(92,255,177,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(92,255,177,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: gridMove 20s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes gridMove {
+      0%   { background-position: 0 0; }
+      100% { background-position: 40px 40px; }
+    }
+
+    /* Glow blob */
+    body::after {
+      content: '';
+      position: fixed;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(92,255,177,0.06) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: translate(-50%,-50%) scale(1); }
+      50%       { opacity: 1;   transform: translate(-50%,-50%) scale(1.1); }
+    }
+
+    .card {
+      position: relative;
+      width: 480px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 48px;
+      z-index: 1;
+      animation: slideUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Top accent line */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    .tag {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tag::before {
+      content: '';
+      width: 20px; height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+      margin-bottom: 36px;
+    }
+
+    h1 em { font-style: italic; color: var(--accent); }
+
+    .form-group { margin-bottom: 20px; }
+
+    label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 12px 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    input::placeholder { color: var(--muted); }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(92,255,177,0.08);
+      background: #1e2330;
+    }
+
+    input:hover:not(:focus) { border-color: #353b4e; }
+
+    input.error {
+      border-color: var(--accent2) !important;
+      box-shadow: 0 0 0 3px rgba(255,107,107,0.08);
+    }
+
+    /* Remove number spinners */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    input[type=number] { -moz-appearance: textfield; }
+
+    .field-error {
+      font-size: 10px;
+      color: var(--accent2);
+      margin-top: 5px;
+      letter-spacing: 0.05em;
+      display: none;
+    }
+    .field-error.show { display: block; }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    button {
+      padding: 13px 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 500;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-save {
+      background: var(--accent);
+      color: #0d0f14;
+    }
+
+    .btn-save:hover {
+      box-shadow: 0 0 20px rgba(92,255,177,0.35);
+      transform: translateY(-1px);
+    }
+
+    .btn-save:active { transform: translateY(0); }
+
+    /* Loading state */
+    .btn-save.loading { pointer-events: none; opacity: 0.7; }
+
+    .btn-save.loading::before {
+      content: '';
+      position: absolute;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(13,15,20,0.3);
+      border-top-color: #0d0f14;
+      border-radius: 50%;
+      top: 50%; left: 50%;
+      margin: -7px 0 0 -7px;
+      animation: spin 0.6s linear infinite;
+    }
+
+    .btn-save.loading span { opacity: 0; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-reset {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-reset:hover {
+      border-color: var(--accent2);
+      color: var(--accent2);
+      box-shadow: 0 0 12px rgba(255,107,107,0.12);
+      transform: translateY(-1px);
+    }
+
+    .btn-reset:active { transform: translateY(0); }
+
+    /* Status bar */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      padding: 12px 28px;
+      border-radius: 2px;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      font-family: 'DM Mono', monospace;
+      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s;
+      opacity: 0;
+      z-index: 100;
+      white-space: nowrap;
+    }
+
+    .toast.show  { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success { background: var(--accent); color: #0d0f14; }
+    .toast.error   {
+      background: #1a1e2a;
+      color: var(--accent2);
+      border: 1px solid var(--accent2);
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="tag">Student Portal</div>
+  <h1>Register <em>Student</em></h1>
+
+  <form id="studentForm" novalidate>
+
+    <div class="form-group">
+      <label for="rollNo">Roll Number</label>
+      <input type="number" id="rollNo" placeholder="e.g. 101" autocomplete="off"/>
+      <div class="field-error" id="rollNo-error">Roll number is required</div>
+    </div>
+
+    <div class="form-group">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" placeholder="e.g. Rahul Sharma" autocomplete="off"/>
+      <div class="field-error" id="name-error">Name is required</div>
+    </div>
+
+    <div class="form-group">
+      <label for="std">Standard / Class</label>
+      <input type="number" id="std" placeholder="e.g. 10" autocomplete="off"/>
+      <div class="field-error" id="std-error">Standard is required</div>
+    </div>
+
+    <div class="form-group">
+      <label for="School">School Name</label>
+      <input type="text" id="School" placeholder="e.g. Holy Family High School" autocomplete="off"/>
+      <div class="field-error" id="School-error">School name is required</div>
+    </div>
+
+    <div class="btn-row">
+      <button type="submit" class="btn-save" id="saveBtn">
+        <span>Save Student</span>
+      </button>
+      <button type="button" class="btn-reset" id="resetBtn">
+        Reset Form
+      </button>
+    </div>
+
+  </form>
+
+  <div class="status-bar">
+    <div class="dot"></div>
+    <span id="statusText">Connected — localhost:5000</span>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const API    = '/student/add';   // relative URL — works because HTML is served by Spring Boot
+  const fields = ['rollNo', 'name', 'std', 'School'];
+
+  // ── Validate one field ────────────────────────────────────────────
+  function validate(id) {
+    const input = document.getElementById(id);
+    const error = document.getElementById(id + '-error');
+    const empty = input.value.trim() === '';
+    input.classList.toggle('error', empty);
+    error.classList.toggle('show',  empty);
+    return !empty;
+  }
+
+  // Live validation — clears error as user types
+  fields.forEach(id =>
+    document.getElementById(id).addEventListener('input', () => validate(id))
+  );
+
+  // ── Toast ─────────────────────────────────────────────────────────
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className   = `toast ${type} show`;
+    setTimeout(() => { t.className = `toast ${type}`; }, 3000);
+  }
+
+  // ── Status text helper ────────────────────────────────────────────
+  function setStatus(text) {
+    document.getElementById('statusText').textContent = text;
+  }
+
+  // ── Reset button ──────────────────────────────────────────────────
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    document.getElementById('studentForm').reset();
+    fields.forEach(id => {
+      document.getElementById(id).classList.remove('error');
+      document.getElementById(id + '-error').classList.remove('show');
+    });
+    setStatus('Connected — localhost:5000');
+    showToast('Form cleared', 'error');
+  });
+
+  // ── Save / Submit ─────────────────────────────────────────────────
+  document.getElementById('studentForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Validate all — stop if any field empty
+    if (!fields.map(validate).every(Boolean)) return;
+
+    const payload = {
+      rollNo : parseInt(document.getElementById('rollNo').value),
+      name   : document.getElementById('name').value.trim(),
+      std    : parseInt(document.getElementById('std').value),
+      School : document.getElementById('School').value.trim()
+    };
+
+    const btn = document.getElementById('saveBtn');
+    btn.classList.add('loading');
+    setStatus('Saving to DB_1 & DB_2...');
+
+    try {
+      const res  = await fetch(API, {
+        method  : 'POST',
+        headers : { 'Content-Type': 'application/json' },
+        body    : JSON.stringify(payload)
+      });
+
+      const msg = await res.text();
+
+      if (res.ok) {
+        showToast('✓ ' + msg);
+        setStatus('Saved successfully to DB_1 & DB_2');
+        document.getElementById('studentForm').reset();
+        // Clear any leftover error states after reset
+        fields.forEach(id => {
+          document.getElementById(id).classList.remove('error');
+          document.getElementById(id + '-error').classList.remove('show');
+        });
+      } else {
+        showToast('✗ ' + msg, 'error');
+        setStatus('Server error: ' + res.status);
+      }
+
+    } catch (err) {
+      showToast('✗ Cannot reach server', 'error');
+      setStatus('Connection failed — is Spring Boot running?');
+    } finally {
+      btn.classList.remove('loading');
+    }
+  });
+</script>
+
+</body>
+</html>

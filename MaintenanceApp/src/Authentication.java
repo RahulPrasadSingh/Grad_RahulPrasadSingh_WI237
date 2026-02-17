@@ -1,3 +1,4 @@
+package MaintenanceApp.src;
 public interface Authentication {
        User validate(String id,String pass);
 }
