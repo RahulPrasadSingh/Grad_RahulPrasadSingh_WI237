@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OurBank — Banking at Your Doorstep</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo-wrap">
+      <div class="logo-icon">O</div>
+      <div class="logo-text">
+        <h1>OURBANK</h1>
+        <p>Banking at Your Doorstep</p>
+      </div>
+    </div>
+    <div class="header-badge">Est. 1995</div>
+  </header>
+
+  <div class="shell">
+    <nav class="sidebar">
+      <div class="nav-section-label">Navigate</div>
+      <a class="nav-link active" onclick="loadPage('home', this)">
+        <span class="nav-icon">⌂</span> Home
+      </a>
+      <a class="nav-link" onclick="loadPage('about', this)">
+        <span class="nav-icon">◎</span> About Us
+      </a>
+      <a class="nav-link" onclick="loadPage('services', this)">
+        <span class="nav-icon">◈</span> Services
+      </a>
+      <div class="nav-divider"></div>
+      <a class="nav-link" onclick="loadPage('login', this)">
+        <span class="nav-icon">→</span> Net Banking
+      </a>
+      <a class="nav-link" onclick="loadPage('contact', this)">
+        <span class="nav-icon">✉</span> Contact Us
+      </a>
+      <div class="sidebar-footer">OurBank © 2025</div>
+    </nav>
+
+    <div class="content-area" id="contentArea"></div>
+  </div>
+
+  <footer>
+    <p>© 2025 OurBank. All rights reserved.</p>
+    <div class="footer-brand">OURBANK</div>
+    <p>www.ourbank.com</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
