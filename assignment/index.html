@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Loan Calculator</title>
+    <link href="style.css" rel="stylesheet"/>
+    <script src="script.js"></script>
+</head>
+<body>
+     <div id="calculator">
+    <h1> Loan Calculator</h1>
+    <form id="form1" onsubmit="calculateEMI(event); false">
+        Applicant : <input type="text" placeholder="Enter Full Name" id="aplicant_n" required>
+        <br><br>
+        Type :      <select id="type" required onchange="selectInterest(this.value); setLimits(this.value)">
+                       <option value="HOME">HOME</option>
+                       <option value="CAR">CAR</option>
+                       <option value="PERSONAL">PERSONAL</option>
+                    </select>
+        <br><br>
+        Interest: <select id="interest" disabled >
+                     <option value="9%"> 9%</option>
+                     <option value="12%"> 12%</option>
+                     <option value="15%">15%</option>
+                  </select>
+        <br><br>
+        Amount : <input type="number" id="amt">
+        <br><br>
+        Duration : <input type="number" id="dur">
+        <br><br>
+        EMI: <h2 id="emi_amt"></h2>
+        <br><br>
+        <button type ="submit" value="Calculate EMI" id="cal">Calculate EMI</button>
+    </form>
+    </div>
+    
+</body>
+</html>
