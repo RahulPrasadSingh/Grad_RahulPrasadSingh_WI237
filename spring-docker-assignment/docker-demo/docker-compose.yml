@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_DB: studentdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"   # since your local postgres uses 5432
+    restart: always
+
+  docker-demo:
+    build: .
+    container_name: docker-demo
+    depends_on:
+      - postgres
+    ports:
+      - "5000:5000"
